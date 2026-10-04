@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rak Cerpen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&family=Newsreader:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============ 1. WARNA & FONT — ubah di sini ============ */
+:root{
+  --bg:#e9ecff;        /* latar halaman */
+  --ink:#1d1b3a;       /* teks utama */
+  --accent:#ff7a3d;    /* warna tombol */
+  --accent-2:#6a3cff;  /* warna sorotan */
+  --paper:#ffffff;     /* warna bingkai foto */
+  --font-title:"Bricolage Grotesque",system-ui,sans-serif;
+  --font-read:"Newsreader",Georgia,serif;
+}
+*{box-sizing:border-box;margin:0}
+body{
+  background:var(--bg);color:var(--ink);font-family:var(--font-read);
+  min-height:100vh;padding:56px 20px 80px;
+  background-image:radial-gradient(circle at 15% 10%,#d4d9ff 0,transparent 40%),
+                   radial-gradient(circle at 90% 80%,#ffe0d0 0,transparent 35%);
+}
+header{max-width:760px;margin:0 auto 56px;text-align:center}
+header h1{font-family:var(--font-title);font-weight:800;font-size:clamp(2.4rem,7vw,4.2rem);line-height:1;letter-spacing:-.03em}
+header p{margin-top:14px;font-size:1.2rem;font-style:italic;opacity:.75}
+
+/* ============ 2. KARTU CERPEN ============ */
+.rak{max-width:1020px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:44px 32px}
+.kartu{
+  background:var(--paper);padding:14px 14px 22px;border-radius:6px;position:relative;
+  box-shadow:0 14px 30px -12px rgba(29,27,58,.35);
+  transform:rotate(var(--miring,0deg));transition:transform .35s cubic-bezier(.3,1.6,.5,1);
+  display:flex;flex-direction:column;
+}
+.kartu:hover{transform:rotate(0) translateY(-8px) scale(1.02)}
+.kartu::before{ /* selotip */
+  content:"";position:absolute;top:-12px;left:50%;width:84px;height:24px;
+  transform:translateX(-50%) rotate(-3deg);background:rgba(255,122,61,.55);
+}
+/* AREA GAMBAR ILUSTRASI */
+.ilustrasi{
+  aspect-ratio:4/3;border-radius:3px;overflow:hidden;position:relative;
+  background:var(--warna);display:grid;place-items:center;
+}
+.ilustrasi img{width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0}
+.ilustrasi .emoji{font-size:4.5rem;filter:drop-shadow(0 6px 8px rgba(0,0,0,.25))}
+.genre{
+  position:absolute;left:8px;bottom:8px;z-index:1;font-family:var(--font-title);font-size:.8rem;
+  background:var(--ink);color:#fff;padding:3px 10px;border-radius:99px;
+}
+.kartu h2{font-family:var(--font-title);font-size:1.45rem;line-height:1.15;margin:16px 4px 6px;letter-spacing:-.01em}
+.kartu .sinopsis{font-size:1.02rem;line-height:1.45;margin:0 4px 18px;opacity:.8;flex:1}
+.kartu .penulis{font-size:.9rem;margin:0 4px 12px;opacity:.6;font-style:italic}
+
+/* TOMBOL MENUJU CERPEN */
+.baca{
+  font-family:var(--font-title);font-weight:800;font-size:1rem;cursor:pointer;text-decoration:none;text-align:center;
+  background:var(--accent);color:#fff;border:0;border-radius:10px;padding:12px 18px;
+  box-shadow:0 5px 0 #c24d17;transition:transform .12s,box-shadow .12s;
+}
+.baca:hover{transform:translateY(2px);box-shadow:0 3px 0 #c24d17}
+.baca:active{transform:translateY(5px);box-shadow:0 0 0 #c24d17}
+.baca:focus-visible,.tutup:focus-visible,.ukuran button:focus-visible{outline:3px solid var(--accent-2);outline-offset:3px}
+
+/* ============ 3. PEMBACA CERPEN (jendela) ============ */
+dialog{
+  border:0;border-radius:18px;max-width:680px;width:calc(100% - 24px);max-height:90vh;
+  padding:0;background:#fffdf8;color:var(--ink);box-shadow:0 30px 80px rgba(29,27,58,.5);
+}
+dialog::backdrop{background:rgba(29,27,58,.6);backdrop-filter:blur(4px)}
+dialog[open]{animation:muncul .3s ease-out}
+@keyframes muncul{from{opacity:0;transform:translateY(24px) scale(.97)}}
+.sampul{height:170px;position:relative;background:var(--warna);display:grid;place-items:center}
+.sampul img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.sampul .emoji{font-size:5rem}
+.isi{padding:26px 30px 34px;overflow-y:auto;max-height:calc(90vh - 170px)}
+.isi h2{font-family:var(--font-title);font-size:1.9rem;line-height:1.1;margin-bottom:4px}
+.isi .oleh{font-style:italic;opacity:.6;margin-bottom:20px}
+.teks{font-size:var(--huruf,1.2rem);line-height:1.75;max-width:62ch}
+.teks p{margin-bottom:1em;text-indent:1.4em}
+.teks p:first-child{text-indent:0}
+.teks p:first-child::first-letter{font-family:var(--font-title);font-weight:800;font-size:3.2em;float:left;line-height:.85;padding:6px 8px 0 0;color:var(--accent-2)}
+.alat{position:absolute;top:12px;right:12px;display:flex;gap:8px;z-index:2}
+.alat button{
+  font-family:var(--font-title);font-weight:800;cursor:pointer;border:0;border-radius:99px;
+  background:rgba(255,255,255,.92);color:var(--ink);min-width:38px;height:38px;padding:0 12px;
+}
+.alat button:hover{background:#fff;transform:scale(1.06)}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Rak Cerpen</h1>
+  <p>Pilih satu ilustrasi, lalu tekan tombolnya untuk masuk ke ceritanya.</p>
+</header>
+
+<main class="rak" id="rak"></main>
+
+<dialog id="pembaca" aria-labelledby="judulBaca">
+  <div class="sampul" id="sampul">
+    <div class="alat">
+      <button id="kecil" aria-label="Perkecil huruf">A−</button>
+      <button id="besar" aria-label="Perbesar huruf">A+</button>
+      <button id="tutup" aria-label="Tutup">✕</button>
+    </div>
+  </div>
+  <div class="isi">
+    <h2 id="judulBaca"></h2>
+    <p class="oleh" id="olehBaca"></p>
+    <div class="teks" id="teksBaca"></div>
+  </div>
+</dialog>
+
+<script>
+/* =====================================================
+   4. DATA CERPEN — tambah / ubah / hapus di sini saja
+   -----------------------------------------------------
+   judul     : judul cerpen
+   penulis   : nama penulis
+   genre     : label kecil di atas gambar
+   sinopsis  : ringkasan singkat di kartu
+   gambar    : alamat file/URL ilustrasi, misal "gambar/hujan.jpg"
+               (kosongkan "" agar muncul emoji + warna sebagai pengganti)
+   emoji     : dipakai kalau gambar kosong
+   warna     : warna latar area gambar
+   url       : isi dengan halaman lain (misal "cerpen1.html") agar
+               tombol berpindah halaman. Kosongkan "" untuk membaca
+               langsung di jendela di bawah.
+   isi       : teks cerpen; pisahkan paragraf dengan baris kosong
+   ===================================================== */
+const CERPEN = [
+  {
+    judul: "Payung Biru di Halte Tujuh",
+    penulis: "Nama Penulis",
+    genre: "Hangat",
+    sinopsis: "Setiap hujan, sebuah payung biru tertinggal di halte yang sama. Siapa pemiliknya?",
+    gambar: "",
+    emoji: "☂️",
+    warna: "linear-gradient(135deg,#4aa3ff,#6a3cff)",
+    url: "",
+    isi: `Hujan turun pukul empat sore, seperti janji yang tak pernah ingkar. Dina menunggu bus di Halte Tujuh ketika matanya menemukan sebuah payung biru yang bersandar di bangku.
+
+Sudah tiga kali ia melihat payung itu. Selalu di bangku yang sama, selalu saat langit gelap, seolah menunggu seseorang yang tahu kapan harus datang.
+
+Hari itu Dina memutuskan menunggu lebih lama. Bus lewat satu, dua, tiga. Hingga seorang lelaki tua berjalan pelan, menepuk payung itu seperti menepuk kepala cucunya, lalu tersenyum padanya.
+
+"Payung ini milik istri saya," katanya. "Ia selalu berkata, jangan biarkan orang basah sendirian."
+
+Sejak hari itu, Dina tidak pernah lagi menunggu bus dalam diam. Ia membawa dua payung ke mana-mana.`
+  },
+  {
+    judul: "Kucing yang Menjaga Waktu",
+    penulis: "Nama Penulis",
+    genre: "Fantasi",
+    sinopsis: "Di menara jam tua, seekor kucing hitam diam-diam menentukan kapan detik boleh berjalan.",
+    gambar: "",
+    emoji: "🐈‍⬛",
+    warna: "linear-gradient(135deg,#1d1b3a,#ff7a3d)",
+    url: "",
+    isi: `Orang-orang mengira jam menara kota berdetak karena mesin. Mereka keliru. Jam itu berdetak karena Mimir, kucing hitam bermata kuning, menepuk bandul setiap malam.
+
+Suatu malam Mimir sakit. Bandul melambat, dan kota mulai kehilangan waktu: sarapan datang saat senja, sekolah bubar sebelum bel pertama.
+
+Seorang anak bernama Raka memanjat menara dengan sebotol susu hangat. Mimir meminumnya, mengeong pelan, lalu kembali menepuk bandul.
+
+Pagi itu semua jam di kota sepakat kembali. Hanya Raka yang tahu alasannya.`
+  },
+  {
+    judul: "Surat untuk Diriku Besok",
+    penulis: "Nama Penulis",
+    genre: "Renungan",
+    sinopsis: "Satu surat, satu kotak pos tua, dan pesan dari seseorang yang belum sempat lahir.",
+    gambar: "",
+    emoji: "💌",
+    warna: "linear-gradient(135deg,#5ad1a5,#2c7a7b)",
+    url: "",
+    isi: `Di ujung gang ada kotak pos yang sudah lama tidak dipakai. Nadia menyelipkan sepucuk surat ke dalamnya, ditujukan untuk dirinya sendiri esok hari.
+
+"Jangan takut pada presentasimu," tulisnya. "Kau sudah berlatih lebih banyak daripada yang kau ingat."
+
+Esok paginya, di dalam kotak pos itu ada balasan. Tulisan tangannya mirip sekali dengan tulisannya.
+
+"Terima kasih sudah percaya. Aku sudah berhasil, dan kau juga akan berhasil."
+
+Nadia tidak pernah menceritakan ini pada siapa pun. Tapi sejak itu, ia rajin menulis surat.`
+  }
+];
+
+/* =====================================================
+   5. MESIN HALAMAN — biasanya tidak perlu diubah
+   ===================================================== */
+const rak = document.getElementById('rak');
+const pembaca = document.getElementById('pembaca');
+const miring = [-2.5, 1.8, -1.2, 2.4, -1.8, 1.2]; // sudut kemiringan tiap kartu
+
+function gambarHTML(c){
+  const img = c.gambar ? `<img src="${c.gambar}" alt="Ilustrasi cerpen ${c.judul}" onerror="this.remove()">` : '';
+  return img + `<span class="emoji" aria-hidden="true">${c.emoji || '📖'}</span>`;
+}
+
+CERPEN.forEach((c, i) => {
+  const el = document.createElement('article');
+  el.className = 'kartu';
+  el.style.setProperty('--miring', miring[i % miring.length] + 'deg');
+  el.style.setProperty('--warna', c.warna);
+  el.innerHTML = `
+    <div class="ilustrasi">${gambarHTML(c)}<span class="genre">${c.genre}</span></div>
+    <h2>${c.judul}</h2>
+    <p class="penulis">oleh ${c.penulis}</p>
+    <p class="sinopsis">${c.sinopsis}</p>
+    ${c.url
+      ? `<a class="baca" href="${c.url}">Baca cerpen</a>`
+      : `<button class="baca" data-i="${i}">Baca cerpen</button>`}`;
+  rak.appendChild(el);
+});
+
+rak.addEventListener('click', e => {
+  const b = e.target.closest('button[data-i]');
+  if(!b) return;
+  const c = CERPEN[b.dataset.i];
+  const sampul = document.getElementById('sampul');
+  sampul.style.setProperty('--warna', c.warna);
+  sampul.querySelectorAll('img,.emoji').forEach(n => n.remove());
+  sampul.insertAdjacentHTML('afterbegin', gambarHTML(c));
+  document.getElementById('judulBaca').textContent = c.judul;
+  document.getElementById('olehBaca').textContent = 'oleh ' + c.penulis;
+  document.getElementById('teksBaca').innerHTML =
+    c.isi.trim().split(/\n\s*\n/).map(p => `<p>${p.trim()}</p>`).join('');
+  pembaca.querySelector('.isi').scrollTop = 0;
+  pembaca.showModal();
+});
+
+document.getElementById('tutup').onclick = () => pembaca.close();
+pembaca.addEventListener('click', e => { if(e.target === pembaca) pembaca.close(); });
+
+let ukuran = 1.2;
+function atur(d){
+  ukuran = Math.min(1.8, Math.max(.9, ukuran + d));
+  pembaca.style.setProperty('--huruf', ukuran + 'rem');
+}
+document.getElementById('besar').onclick = () => atur(.1);
+document.getElementById('kecil').onclick = () => atur(-.1);
+</script>
+</body>
+</html>
